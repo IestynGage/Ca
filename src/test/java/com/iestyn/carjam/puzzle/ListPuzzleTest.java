@@ -2,6 +2,7 @@ package com.iestyn.carjam.puzzle;
 
 import com.iestyn.carjam.puzzle.elements.Axis;
 import com.iestyn.carjam.puzzle.elements.Car;
+import com.iestyn.carjam.puzzle.elements.Location;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -15,6 +16,25 @@ class ListPuzzleTest {
     var validMove = puzzle.checkVehicleMove(target, 1);
 
     assertTrue(validMove);
+  }
+
+  @Test void getAllMovesForSingleVehicleTargetVehicle() {
+    ListPuzzle puzzle = new ListPuzzle();
+
+    Car target = new Car(new Integer[]{1, 2}, Axis.Horizontal, "TT");
+    puzzle.addTargetVehicle(target);
+    System.out.println(puzzle);
+    var moves = puzzle.getSingleVehiclePossibleMoves(target);
+    assertEquals(4, moves.size());
+    assertArrayEquals(
+        new Location[]{
+            new Location(0, 2),
+            new Location(2, 2),
+            new Location(3, 2),
+            new Location(4, 2)
+        },
+        moves.toArray()
+    );
   }
 
   @Test
@@ -55,6 +75,7 @@ class ListPuzzleTest {
     ListPuzzle puzzle = new ListPuzzle();
     Car target = new Car(new Integer[]{1, 2}, Axis.Horizontal, "TT");
     puzzle.addVehicle(target);
+    System.out.println(puzzle);
     var moves = puzzle.getAllMovesForSingleVehicle(target);
     assertEquals(4, moves.size());
   }

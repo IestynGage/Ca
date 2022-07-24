@@ -12,6 +12,17 @@ import org.junit.jupiter.api.Test;
 public class BreathFirstSearchTest {
 
   @Test
+  public void noObstacleTest() {
+    ListPuzzle puzzle = new ListPuzzle();
+
+    Car target = new Car(new Integer[]{1, 2}, Axis.Horizontal, "TT");
+    puzzle.addTargetVehicle(target);
+
+    System.out.println(puzzle);
+    BreathFirstSearch ai = new BreathFirstSearch(puzzle);
+    System.out.println(ai.getSolution());
+  }
+  @Test
   public void simplePuzzleTest() {
     ListPuzzle puzzle = new ListPuzzle();
     Car car1 = new Car(new Integer[]{2, 3}, Axis.Horizontal, "C1");

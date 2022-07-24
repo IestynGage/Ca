@@ -259,11 +259,12 @@ public class ListPuzzle implements PuzzleInterface {
 
     possibleMoves.add(startLocation);
     //add Possible Moves
-    for (int i = 0; i < (mapSize - 2); i++) {
-      Location newLocation = new Location(possibleMoves.get(i).toArray());
+    for (int i = 1; i < (mapSize - 1); i++) {
+      Location newLocation = new Location(startLocation);
       newLocation.add(theVehicle.getAxis(), i);
       possibleMoves.add(newLocation);
     }
+
     possibleMoves.remove(theVehicle.getHeadLocation());
 
     return  possibleMoves;

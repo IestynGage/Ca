@@ -10,10 +10,11 @@ import java.util.Queue;
  */
 public class BreathFirstSearch {
 
-  Queue<PuzzleInterface> puzzleQueue = new LinkedList<>();
+  Queue<PuzzleInterface> currentQueue = new LinkedList<>();
+  Queue<PuzzleInterface> nextQueue = new LinkedList<>();
 
   public BreathFirstSearch(PuzzleInterface firstQueue) {
-    puzzleQueue.add(firstQueue);
+    currentQueue.add(firstQueue);
   }
 
   /**
@@ -24,16 +25,23 @@ public class BreathFirstSearch {
 
   public String getSolution() {
     var moveAmount = 0;
-    while (!puzzleQueue.isEmpty()) {
-      PuzzleInterface puzzle = puzzleQueue.remove();
 
-      if (puzzle.isPuzzleComplete()) {
-        System.out.println("Solution found " + moveAmount);
-        return puzzle.getMoveHistory();
+    while (!currentQueue.isEmpty() || !nextQueue.isEmpty()) {
+
+      while (!currentQueue.isEmpty()) {
+        PuzzleInterface puzzle = currentQueue.remove();
+        if (puzzle.isPuzzleComplete()) {
+          System.out.println("Solution found " + moveAmount);
+          return puzzle.getMoveHistory();
+        }
+        nextQueue.addAll(puzzle.getAllMovesForAllVehicles());
       }
+      System.out.println(moveAmount);
       moveAmount++;
-      puzzleQueue.addAll(puzzle.getAllMovesForAllVehicles());
+      currentQueue = nextQueue;
+      nextQueue = new LinkedList<>();
     }
+
     System.out.println("Solution Not found");
     return "No Solution";
   }

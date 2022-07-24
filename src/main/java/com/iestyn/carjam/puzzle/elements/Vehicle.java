@@ -105,6 +105,7 @@ public class Vehicle extends Tile {
       newPathLocation.add(axis, i);
       path.add(newPathLocation);
     }
+
     return path;
   }
 
