@@ -22,6 +22,8 @@ public class ListPuzzle implements PuzzleInterface {
   private Integer mapSize;
   private Location exitTile;
 
+  private String moveHistory;
+
   /**
    * Default Constructor for ListKR.
    * Sets the mapSize to 6, with exit tile at 5,2.
@@ -30,7 +32,8 @@ public class ListPuzzle implements PuzzleInterface {
   public ListPuzzle() {
     mapSize = 6;
     vehicles = new ArrayList<>();
-    this.exitTile = new Location(new Integer[]{5, 2});
+    exitTile = new Location(new Integer[]{5, 2});
+    moveHistory = "";
   }
 
   /**
@@ -49,6 +52,7 @@ public class ListPuzzle implements PuzzleInterface {
     this.mapSize = mapSize;
     vehicles = new ArrayList<>();
     this.exitTile = new Location(exitTile);
+    moveHistory = "";
   }
 
   /**
@@ -66,6 +70,7 @@ public class ListPuzzle implements PuzzleInterface {
     this.mapSize = mapSize;
     vehicles = new ArrayList<>();
     this.exitTile = exitTile;
+    moveHistory = "";
   }
 
   /**
@@ -90,6 +95,8 @@ public class ListPuzzle implements PuzzleInterface {
     if (original.exitTile != null) {
       this.exitTile = new Location(original.exitTile);
     }
+
+    moveHistory = String.valueOf(original.getMoveHistory());
   }
 
   /**
@@ -99,10 +106,12 @@ public class ListPuzzle implements PuzzleInterface {
    */
   @Override
   public void addVehicle(Vehicle newVehicle) {
-    if (vehicles != null) {
+    if (vehicles != null
+        || vehicles.stream()
+        .anyMatch(v -> v.collision(newVehicle))) {
       vehicles.add(newVehicle);
     } else {
-      System.err.println("ListKR addVehicle: vehicles ArrayList is empty");
+      System.err.println("ListKR addVehicle: vehicles ArrayList is null");
     }
   }
 
@@ -151,16 +160,29 @@ public class ListPuzzle implements PuzzleInterface {
     }
     vehicle.move(amount);
     vehicles.add(vehicle);
-
+    moveHistory = moveHistory + " | " + vehicle.getVehicleId() + amount;
     return true;
   }
 
   /**
    * This checks if possible vehicle move is possible. Checks if there are any vehicles in the way
-
    */
   public Boolean checkVehicleMove(Vehicle vehicle, Integer amount) {
-    return true;
+    var path = vehicle.getPathToLocation(amount);
+
+    return vehicles
+        .stream()
+        .filter(v -> !v.getVehicleId().equals(vehicle.getVehicleId()))
+        .noneMatch(v -> {
+          var p = v.getWholeBodyLocation();
+          var o = path
+              .stream()
+              .anyMatch(v::isOnLocation);
+
+          return o;
+        });
+
+
     //TODO Refactor moveVehicle checks into this function.
     //TODO implement this method for getAllPosibleMoves
   }
@@ -230,18 +252,16 @@ public class ListPuzzle implements PuzzleInterface {
    *         even if another vehicles on it.
    */
   public ArrayList<Location> getSingleVehiclePossibleMoves(Vehicle theVehicle) {
-    Location startLocation;
     ArrayList<Location> possibleMoves = new ArrayList<>();
-    if (theVehicle.getAxis() == Axis.Horizontal) {
-      startLocation = new Location(0, theVehicle.getHeadLocation().getAxisY());
-    } else {
-      startLocation = new Location(theVehicle.getHeadLocation().getAxisX(), 0);
-    }
+    Location startLocation = theVehicle.getAxis() == Axis.Horizontal ?
+      new Location(0, theVehicle.getHeadLocation().getAxisY()) :
+      new Location(theVehicle.getHeadLocation().getAxisX(), 0);
+
     possibleMoves.add(startLocation);
     //add Possible Moves
     for (int i = 0; i < (mapSize - 2); i++) {
       Location newLocation = new Location(possibleMoves.get(i).toArray());
-      newLocation.add(theVehicle.getAxis(), 1);
+      newLocation.add(theVehicle.getAxis(), i);
       possibleMoves.add(newLocation);
     }
     possibleMoves.remove(theVehicle.getHeadLocation());
@@ -250,21 +270,11 @@ public class ListPuzzle implements PuzzleInterface {
   }
 
   /**
-   * Checks if the board is legal.
-   *
-   * @return True if the board is legal, False if it's not.
-   */
-  @Override
-  public Boolean checkBoardLegal() {
-    return null;
-  }
-
-  /**
    * TODO Implement.
    */
   @Override
   public String getMoveHistory() {
-    return null;
+    return moveHistory;
   }
 
   /**

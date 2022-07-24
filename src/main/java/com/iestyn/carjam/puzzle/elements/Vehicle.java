@@ -95,11 +95,12 @@ public class Vehicle extends Tile {
    * @return ArrayList of the locations need to be visited to get to the destination.
    */
   public ArrayList<Location> getPathToLocation(Integer amount) {
-    if (amount == 0) {
-      return new ArrayList<>();
-    }
+    int movesToLocation = amount > 0 ?
+        amount + 1 :
+        Math.abs(amount);
     ArrayList<Location> path = new ArrayList<>();
-    for (Integer i = 1; i <= amount; i++) {
+
+    for (int i = 1; i <= movesToLocation; i++) {
       Location newPathLocation = new Location(headLocation.toArray());
       newPathLocation.add(axis, i);
       path.add(newPathLocation);
@@ -172,6 +173,12 @@ public class Vehicle extends Tile {
       //TODO: Create an custom error?
       return null;
     }
+  }
+
+  public boolean collision(Vehicle vehicle) {
+    return vehicle.getWholeBodyLocation()
+        .stream()
+        .anyMatch(vehicle::isOnLocation);
   }
 
   /**

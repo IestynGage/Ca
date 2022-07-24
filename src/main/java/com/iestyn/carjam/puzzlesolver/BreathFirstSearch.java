@@ -23,14 +23,15 @@ public class BreathFirstSearch {
    */
 
   public String getSolution() {
+    var moveAmount = 0;
     while (!puzzleQueue.isEmpty()) {
       PuzzleInterface puzzle = puzzleQueue.remove();
 
       if (puzzle.isPuzzleComplete()) {
-        System.out.println("Solution found");
+        System.out.println("Solution found " + moveAmount);
         return puzzle.getMoveHistory();
       }
-
+      moveAmount++;
       puzzleQueue.addAll(puzzle.getAllMovesForAllVehicles());
     }
     System.out.println("Solution Not found");

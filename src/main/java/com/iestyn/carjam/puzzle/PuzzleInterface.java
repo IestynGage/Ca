@@ -8,6 +8,10 @@ import java.util.ArrayList;
  */
 public interface PuzzleInterface {
 
+  static PuzzleInterface createEmtpy() {
+    return new ListPuzzle();
+  }
+
   void addVehicle(Vehicle newVehicle);
 
   void replaceAllVehicles(ArrayList<Vehicle> vehicles);
@@ -16,10 +20,21 @@ public interface PuzzleInterface {
 
   ArrayList<? extends PuzzleInterface> getAllMovesForAllVehicles();
 
-  Boolean checkBoardLegal();
+  static Boolean validPuzzle(PuzzleInterface puzzle) {
+    var vehicles = puzzle.getVehicles();
+
+    return vehicles
+        .stream()
+        .anyMatch((v1 ->
+            vehicles.stream()
+                .anyMatch(v2 -> v1.getVehicleId().equals(v2.getVehicleId()) || v1.collision(v2))
+        ));
+  }
 
   String getMoveHistory();
 
   Boolean isPuzzleComplete();
+
+  ArrayList<Vehicle>  getVehicles();
 
 }
