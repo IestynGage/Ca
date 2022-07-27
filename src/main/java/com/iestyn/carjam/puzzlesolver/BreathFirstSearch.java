@@ -1,6 +1,8 @@
 package com.iestyn.carjam.puzzlesolver;
 
 import com.iestyn.carjam.puzzle.PuzzleInterface;
+
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.Queue;
 
@@ -12,6 +14,8 @@ public class BreathFirstSearch {
 
   Queue<PuzzleInterface> currentQueue = new LinkedList<>();
   Queue<PuzzleInterface> nextQueue = new LinkedList<>();
+
+  HashSet<String> alreadyVisited = new HashSet<>();
 
   public BreathFirstSearch(PuzzleInterface firstQueue) {
     currentQueue.add(firstQueue);
@@ -30,13 +34,16 @@ public class BreathFirstSearch {
 
       while (!currentQueue.isEmpty()) {
         PuzzleInterface puzzle = currentQueue.remove();
-        if (puzzle.isPuzzleComplete()) {
-          System.out.println("Solution found " + moveAmount);
-          return puzzle.getMoveHistory();
+        if (!alreadyVisited.contains(puzzle.toString())) {
+          if (puzzle.isPuzzleComplete()) {
+            System.out.println("Solution found " + moveAmount);
+            return puzzle.getMoveHistory();
+          }
+          nextQueue.addAll(puzzle.getAllMovesForAllVehicles());
+          alreadyVisited.add(puzzle.toString());
         }
-        nextQueue.addAll(puzzle.getAllMovesForAllVehicles());
       }
-      System.out.println(moveAmount);
+      System.out.println("Moves: " + moveAmount + ", nextQueue: " + nextQueue.size());
       moveAmount++;
       currentQueue = nextQueue;
       nextQueue = new LinkedList<>();

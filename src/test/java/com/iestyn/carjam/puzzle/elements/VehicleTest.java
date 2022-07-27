@@ -28,6 +28,20 @@ class VehicleTest {
     assertEquals(new Location(5, 4), path.get(0));
     assertEquals(new Location(6, 4), path.get(1));
     assertEquals(new Location(7, 4), path.get(2));
-    assertEquals(new Location(8, 4), path.get(3));
+  }
+
+  @Test
+  public void getPathToLocationBusForwardTest() {
+    Bus target = new Bus(new Integer[]{4, 4}, Axis.Horizontal, "TT");
+    var path = target.getPathToLocation(1);
+    assertEquals(3, path.size());
+    assertEquals(new Location(5, 4), path.get(0));
+  }
+
+  @Test
+  public void getWholeBodyLocationBus() {
+    Bus target = new Bus(new Integer[]{4, 4}, Axis.Horizontal, "TT");
+    var bodyLocation = target.getWholeBodyLocation();
+    assertEquals(3, bodyLocation.size());
   }
 }

@@ -178,7 +178,6 @@ public class ListPuzzle implements PuzzleInterface {
           var o = path
               .stream()
               .anyMatch(v::isOnLocation);
-
           return o;
         });
 
@@ -217,7 +216,7 @@ public class ListPuzzle implements PuzzleInterface {
 
   /**
    * This gets all legals moves a single vehicle can make.
-   *
+   * TODO Refactor to do a straight line both ways instead of getting all
    * @param vehicleToMove the vehicle you want all moves to.
    * @return ArrayList of PuzzleKR with each one with unique move the vehicle could make.
    */
@@ -244,13 +243,6 @@ public class ListPuzzle implements PuzzleInterface {
     return allMoves;
   }
 
-  /**
-   * Gets all the possible moves a vehicle could make.
-   *
-   * @param theVehicle the vehicle you wish to move
-   * @return an array list of possible locations the vehicle could move to,
-   *         even if another vehicles on it.
-   */
   public ArrayList<Location> getSingleVehiclePossibleMoves(Vehicle theVehicle) {
     ArrayList<Location> possibleMoves = new ArrayList<>();
     Location startLocation = theVehicle.getAxis() == Axis.Horizontal ?
@@ -259,7 +251,7 @@ public class ListPuzzle implements PuzzleInterface {
 
     possibleMoves.add(startLocation);
     //add Possible Moves
-    for (int i = 1; i < (mapSize - 1); i++) {
+    for (int i = 1; i < (mapSize - (theVehicle.getSize() - 1)); i++) {
       Location newLocation = new Location(startLocation);
       newLocation.add(theVehicle.getAxis(), i);
       possibleMoves.add(newLocation);

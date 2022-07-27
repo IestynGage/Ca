@@ -96,13 +96,13 @@ public class Vehicle extends Tile {
    */
   public ArrayList<Location> getPathToLocation(Integer amount) {
     int movesToLocation = amount > 0 ?
-        amount + 1 :
+        amount + this.getSize() - 1:
         Math.abs(amount);
     ArrayList<Location> path = new ArrayList<>();
 
     for (int i = 1; i <= movesToLocation; i++) {
       Location newPathLocation = new Location(headLocation.toArray());
-      newPathLocation.add(axis, i);
+      newPathLocation.add(axis, amount > 0 ? i : -i);
       path.add(newPathLocation);
     }
 
